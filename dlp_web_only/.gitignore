@@ -20,6 +20,7 @@
 *.jks
 dlp_api_key.txt
 api_key*.txt
+monitored_data/api_keys_config.txt
 secret_key*.txt
 private_key*
 public_key*
