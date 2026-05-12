@@ -1,0 +1,6 @@
+Employee_ID,Name,Email,Phone,SSN,Department
+E001,Alice Brown,alice.brown@company.com,555-111-2222,111-22-3333,Engineering
+E002,Bob Wilson,bob.wilson@company.com,555-222-3333,222-33-4444,Sales
+E003,Carol Davis,carol.davis@company.com,555-333-4444,333-44-5555,HR
+E004,David Martinez,david.m@company.com,555-444-5555,444-55-6666,Finance
+E005,Emma Taylor,emma.taylor@company.com,555-555-6666,555-66-7777,Marketing

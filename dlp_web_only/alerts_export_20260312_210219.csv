@@ -1,0 +1,6 @@
+timestamp,severity,message,file,findings
+2026-03-12T21:01:07.991291,HIGH,Sensitive data detected in file,monitored_data\api_keys_config.txt,"{""ip_address"": 4, ""aws_key"": 1}"
+2026-03-12T21:01:07.992271,HIGH,Sensitive data detected in file,monitored_data\customer_database.txt,"{""ssn"": 3, ""email"": 3, ""phone"": 2}"
+2026-03-12T21:01:07.993604,HIGH,Sensitive data detected in file,monitored_data\employee_contacts.csv,"{""ssn"": 5, ""email"": 5, ""phone"": 5}"
+2026-03-12T21:01:07.994159,HIGH,Sensitive data detected in file,monitored_data\payment_records.txt,"{""ssn"": 1, ""email"": 3}"
+2026-03-12T21:01:07.994836,HIGH,Sensitive data detected in file,monitored_data\safe_document.txt,"{""email"": 3}"

@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block page_script %}
+<script>
+console.log("[MONITORING] Setting DLP_PAGE in head block");
+window.DLP_PAGE = 'monitoring';
+</script>
+{% endblock %}
+
+{% block content %}
+<script>
+// Backup: Set DLP_PAGE if it wasn't set by head script (browser cache issue)
+if (typeof window.DLP_PAGE === 'undefined') {
+    console.warn("[MONITORING] DLP_PAGE not set, initializing from content block");
+    window.DLP_PAGE = 'monitoring';
+}
+</script>
+  <section class="banner">
+    <div class="banner__strip"></div>
+    <div style="flex: 1;">
+      <div class="banner__title">🔍 Real-Time Monitoring</div>
+      <div class="banner__subtitle">Cyber Sentinel actively protects your sensitive data</div>
+    </div>
+    <div>
+      <button id="btnToggleAutoRefresh" class="btn btn--xs" title="Toggle auto-refresh">⏸ Pause Refresh</button>
+    </div>
+  </section>
+
+  {% if msg %}
+  <div class="alert">{{ msg }}</div>
+  {% endif %}
+
+  <section class="grid">
+    <div class="card">
+      <div class="card__title">Controls</div>
+      <div class="row">
+        <form method="post" action="/action/start" style="display:inline">
+          <button class="btn btn--good" type="submit" id="btnStart" {% if is_monitoring %}disabled{% endif %}>Start Monitoring</button>
+        </form>
+        <form method="post" action="/action/stop" style="display:inline">
+          <button class="btn btn--bad" type="submit" id="btnStop" {% if not is_monitoring %}disabled{% endif %}>Stop Monitoring</button>
+        </form>
+        <form method="post" action="/action/scan" style="display:inline">
+          <button class="btn" type="submit" id="btnScan">Manual Scan</button>
+        </form>
+        <form method="post" action="/action/network-scan" style="display:inline">
+          <button class="btn btn--ghost" type="submit" id="btnNetworkScan">Network Risk Scan</button>
+        </form>
+      </div>
+      <div class="hint" id="statusHint">
+        Status: <strong>{% if is_monitoring %}MONITORING{% else %}STOPPED{% endif %}</strong>
+        {% if last_scan_time %} • Last scan: {{ last_scan_time }}{% endif %}
+      </div>
+      <div class="hint" id="networkScanResult"></div>
+      
+      <!-- Progress Bar -->
+      <div class="progress-bar-container" style="display: none;">
+        <div class="progress-bar" id="scanProgress" style="width: 0%;"></div>
+      </div>
+      <div class="progress-info">
+        <span id="scanProgressInfo"></span>
+        <span id="scanStats"></span>
+      </div>
+      
+      <!-- Quick Actions -->
+      <div class="row" style="margin-top: 16px;">
+        <button class="btn btn--ghost" id="btnQuickScanDownloads">🚀 Quick Scan Downloads</button>
+        <button class="btn btn--ghost" id="btnQuickScanDocuments">🚀 Quick Scan Documents</button>
+        <a class="btn btn--ghost" href="/api/report" target="_blank" rel="noopener">📊 Generate Report (JSON)</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card__title">Monitored Paths</div>
+      <div class="hint">Edit paths in Configuration (recommended). Current config:</div>
+      <ul class="list">
+        {% for p in config.get('monitored_paths', []) %}
+          <li class="list__item">{{ p }}</li>
+        {% else %}
+          <li class="list__item">(none)</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card__title">Test File Transfer</div>
+      <form method="post" action="/action/test-transfer">
+        <div class="row row--stack">
+          <label class="field">
+            <span class="field__label">File path</span>
+            <input name="file_path" id="transferFile" class="input" placeholder="e.g. ./monitored_data/customer_data.txt" />
+          </label>
+          <label class="field">
+            <span class="field__label">Destination</span>
+            <input name="destination" id="transferDest" class="input" placeholder="e.g. external_server.com" />
+          </label>
+          
+          <!-- Drag and Drop Zone -->
+          <div id="dropZone" class="drop-zone">
+            <div style="font-size: 40px; margin-bottom: 10px;">📁</div>
+            <div style="font-weight: 700; margin-bottom: 5px;">Drop files here to test</div>
+            <div style="color: var(--muted); font-size: 12px;">or click to browse</div>
+          </div>
+          <input type="file" id="fileInput" style="display: none;" />
+          
+          <button class="btn" type="submit">Run Transfer Test</button>
+          {% if transfer_result %}
+          <div class="hint"><strong>{{ transfer_result }}</strong></div>
+          {% endif %}
+          <div class="hint" id="transferResult"></div>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}

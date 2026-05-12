@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block page_script %}
+<script>
+console.log("[DASHBOARD] Setting DLP_PAGE in head block");
+window.DLP_PAGE = 'dashboard';
+</script>
+{% endblock %}
+{% block content %}
+<script>
+// Backup: Set DLP_PAGE if it wasn't set by head script (browser cache issue)
+if (typeof window.DLP_PAGE === 'undefined') {
+    console.warn("[DASHBOARD] DLP_PAGE not set, initializing from content block");
+    window.DLP_PAGE = 'dashboard';
+}
+</script>
+<div class="banner">
+  <div class="banner__strip"></div>
+  <div>
+    <div class="banner__title">📊 Cyber Sentinel Dashboard</div>
+    <div class="banner__subtitle">Real-time threat intelligence and security metrics</div>
+  </div>
+</div>
+
+<div class="grid">
+  <!-- Summary Cards -->
+  <div class="card">
+    <div class="card__title">Total Alerts</div>
+    <div style="font-size: 48px; font-weight: 800; text-align: center; padding: 20px;" id="totalAlerts">-</div>
+  </div>
+
+  <div class="card">
+    <div class="card__title">Critical Alerts</div>
+    <div style="font-size: 48px; font-weight: 800; text-align: center; padding: 20px; color: var(--bad);" id="criticalAlerts">-</div>
+  </div>
+
+  <div class="card">
+    <div class="card__title">High Alerts</div>
+    <div style="font-size: 48px; font-weight: 800; text-align: center; padding: 20px; color: #ff9800;" id="highAlerts">-</div>
+  </div>
+
+  <div class="card">
+    <div class="card__title">Whitelisted Items</div>
+    <div style="font-size: 48px; font-weight: 800; text-align: center; padding: 20px;" id="whitelistCount">-</div>
+  </div>
+
+  <!-- Scan Statistics -->
+  <div class="card">
+    <div class="card__title">Total Scans</div>
+    <div style="font-size: 48px; font-weight: 800; text-align: center; padding: 20px; color: var(--progress-fill);" id="totalScans">-</div>
+  </div>
+
+  <div class="card">
+    <div class="card__title">Files Checked</div>
+    <div style="font-size: 48px; font-weight: 800; text-align: center; padding: 20px;" id="filesChecked">-</div>
+  </div>
+
+  <div class="card">
+    <div class="card__title">Last Scan Duration</div>
+    <div style="font-size: 36px; font-weight: 800; text-align: center; padding: 20px;" id="lastScanDuration">-</div>
+  </div>
+
+  <!-- Alert Distribution -->
+  <div class="card card--wide">
+    <div class="card__title">Alert Distribution by Severity</div>
+    <div id="severityChart" style="min-height: 200px; padding: 20px;">
+      <div id="severityBars"></div>
+    </div>
+  </div>
+
+  <!-- Pattern Detection -->
+  <div class="card card--wide">
+    <div class="card__title">Detections by Pattern Type</div>
+    <div id="patternChart" style="min-height: 200px; padding: 20px;">
+      <div id="patternBars"></div>
+    </div>
+  </div>
+
+  <!-- Export Section -->
+  <div class="card">
+    <div class="card__title">Export Reports</div>
+    <div class="row row--stack">
+      <button id="btnExportCSV" class="btn">📄 Export to CSV</button>
+      <button id="btnExportJSON" class="btn">📋 Export to JSON</button>
+      <div class="hint" id="exportStatus">Click to export alerts</div>
+    </div>
+  </div>
+
+  <!-- Quarantine Status -->
+  <div class="card">
+    <div class="card__title">Quarantine Status</div>
+    <div class="row row--stack">
+      <div style="padding: 10px; text-align: center;">
+        <div style="font-size: 24px; font-weight: 700;" id="quarantineStatus">-</div>
+      </div>
+      <button id="btnToggleQuarantine" class="btn">Toggle Quarantine</button>
+      <div class="hint">Auto-move files with sensitive data</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.DLP_PAGE = 'dashboard';
+</script>
+{% endblock %}

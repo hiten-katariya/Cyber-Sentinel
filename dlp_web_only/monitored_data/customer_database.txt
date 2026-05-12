@@ -1,0 +1,23 @@
+CUSTOMER DATABASE - CONFIDENTIAL
+================================
+
+Customer ID: 1001
+Name: John Smith
+Email: john.smith@company.com
+Credit Card: 4532-1488-0343-6467
+SSN: 123-45-6789
+Phone: (555) 123-4567
+
+Customer ID: 1002
+Name: Sarah Johnson
+Email: sarah.j@email.com
+Credit Card: 5425-2334-3010-9903
+SSN: 987-65-4321
+Phone: +1-555-987-6543
+
+Customer ID: 1003
+Name: Michael Chen
+Email: m.chen@business.com
+Credit Card: 3782-822463-10005
+SSN: 456-78-9012
+Phone: 555-246-8100

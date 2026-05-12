@@ -1,0 +1,144 @@
+CYBER SENTINEL — ARCHITECTURE + PAGE ENDPOINTS
+
+Architecture (request/response + background thread)
+
+Browser (templates + static/app.js)
+  |
+  |  HTTP requests (fetch) with header: X-API-Key
+  v
+Flask Web App (dlp_web.py)
+  |    \
+  |     \__ Background thread (when monitoring is ON)
+  |          loops every N seconds:
+  |          -> DLPSystem / FileMonitor scans folders
+  |          -> creates alerts + updates stats
+  |          -> writes cyber_sentinel.log
+  |
+  +--> JSON APIs (/api/*)  ----->  DLPSystem (dlp_monitor.py)
+  |                               - scan_file / monitor_directory
+  |                               - alert_system (alerts list + stats)
+  |                               - whitelist / quarantine / export / backup
+  |
+  +--> HTML pages (/monitoring, /alerts, /dashboard, /advanced, /logs)
+       (server renders templates/*.html; app.js then calls APIs)
+
+Important note about the background thread
+- It only runs after you click Start Monitoring (calls /api/start).
+- It’s inside the Flask process, so if the server stops, monitoring stops too.
+
+Page-by-page walkthrough + exact endpoints hit
+
+1) Monitoring page
+HTML route:
+- GET /monitoring
+
+APIs called by the page JS:
+- GET /api/status
+  Purpose: update pill “MONITORING/STOPPED” + last scan time/error.
+  Frequency: called initially and then every 2 seconds (unless paused).
+
+Buttons/actions:
+- Start Monitoring:
+  - POST /api/start
+  - Then GET /api/status
+- Stop Monitoring:
+  - POST /api/stop
+  - Then GET /api/status
+- Manual Scan:
+  - POST /api/scan
+  - Then GET /api/status
+- Test Transfer:
+  - POST /api/test-transfer
+    JSON: { "file_path": "...", "destination": "..." }
+
+Quick actions (buttons you added):
+- Quick Scan Downloads:
+  - POST /api/scan with JSON { "path": "<Downloads path>" }
+- Quick Scan Documents:
+  - POST /api/scan with JSON { "path": "<Documents path>" }
+
+Heads up:
+- In the current backend, POST /api/scan ignores JSON "path" and always runs the standard manual scan.
+  So the Quick Scan buttons call the endpoint but won’t scan those specific folders unless api_scan() is extended.
+
+2) Alerts page
+HTML route:
+- GET /alerts
+
+APIs called:
+- GET /api/alerts
+  Loads alerts (latest ~200). Frontend reverses them so newest appear first.
+  Auto-refresh: every 5 seconds (unless paused).
+- POST /api/alerts/clear
+  Clears all alerts (confirmation dialog first).
+- GET /api/status
+  For the top status pill; called every 2 seconds.
+
+Filtering:
+- Search + severity filter are client-side only (no extra endpoints).
+
+3) Dashboard page
+HTML route:
+- GET /dashboard
+
+APIs called:
+- GET /api/report
+  Returns summary report.
+- GET /api/statistics
+  Returns statistics + scan_stats.
+- GET /api/quarantine/status
+  Returns quarantine enabled/disabled.
+- GET /api/status
+  For status pill; called every 2 seconds.
+
+Actions:
+- Export CSV: GET /api/export/csv
+- Export JSON: GET /api/export/json
+- Toggle Quarantine:
+  - POST /api/quarantine/enable OR POST /api/quarantine/disable
+  - Then refreshes by calling the 3 GET endpoints above again.
+
+Refresh behavior:
+- Dashboard refresh runs every 5 seconds.
+
+4) Advanced page
+HTML route:
+- GET /advanced
+
+APIs called:
+Whitelist:
+- GET /api/whitelist
+- POST /api/whitelist/add    JSON: { "item": "..." }
+- POST /api/whitelist/remove JSON: { "item": "..." }
+
+Quarantine:
+- GET /api/quarantine/status
+- POST /api/quarantine/enable
+- POST /api/quarantine/disable
+
+Backup/Restore:
+- POST /api/backup/create
+- POST /api/backup/restore JSON: { "backup_file": "..." }
+
+Maintenance:
+- POST /api/alerts/clear
+
+Status pill:
+- GET /api/status (every 2 seconds)
+
+5) Logs page
+HTML route:
+- GET /logs
+
+APIs called:
+- GET /api/logs?lines=<N>
+  Loads last N lines from cyber_sentinel.log.
+- GET /api/status (every 2 seconds)
+
+Filtering:
+- Search + log level filter are client-side only (no extra endpoints).
+
+Authentication flow (applies to all /api/* calls)
+- Frontend sends X-API-Key from localStorage (key name: dlp_api_key).
+- If API responds 401:
+  - JS removes the saved key and throws an error prompting refresh and re-entry.

@@ -1,0 +1,23 @@
+PUBLIC INFORMATION DOCUMENT
+===========================
+
+This document contains only public information and should NOT trigger any alerts.
+
+Company Overview:
+- Founded: 2010
+- Headquarters: San Francisco, CA
+- Employees: 500+
+- Industry: Technology
+
+Products:
+- Cloud Services
+- Data Analytics
+- Business Intelligence Tools
+
+Contact Information:
+- General Inquiries: info@company.com
+- Sales: sales@company.com
+- Support: support@company.com
+- Office Address: 123 Main Street, San Francisco, CA 94102
+
+This is a safe file for testing the whitelist feature.

@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block page_script %}
+<script>
+  console.log('[CONFIG] Setting DLP_PAGE to config');
+  window.DLP_PAGE = 'config';
+  console.log('[CONFIG] DLP_PAGE is now:', window.DLP_PAGE);
+</script>
+{% endblock %}
+
+{% block content %}
+  <section class="banner">
+    <div class="banner__strip banner__strip--muted"></div>
+    <div>
+      <div class="banner__title">⚙️ System Configuration</div>
+      <div class="banner__subtitle">Configure Cyber Sentinel monitoring and alert settings</div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <div class="card__title">Alert Email</div>
+      <label class="field">
+        <span class="field__label">Email</span>
+        <input id="alertEmail" class="input" value="{{ config.get('alert_email','') }}" placeholder="security@company.com" />
+      </label>
+      <div class="row row--stack">
+        <button id="btnSaveConfig" class="btn btn--good" type="button">💾 Save Configuration</button>
+        <div class="hint" id="saveConfigResult" style="margin-top: 8px;"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card__title">Monitored Paths</div>
+      <div class="row row--stack">
+        <label class="field">
+          <span class="field__label">Add path</span>
+          <input id="newPath" class="input" placeholder="e.g. ./monitored_data" />
+        </label>
+        <div style="display: flex; gap: 10px;">
+          <button id="btnBrowseFolder" class="btn btn--ghost" type="button">📁 Browse Folder</button>
+          <button id="btnAddPath" class="btn btn--good" type="button">➕ Add Path</button>
+        </div>
+      </div>
+      <input type="file" id="folderPicker" webkitdirectory directory multiple style="display: none;" />
+      <ul id="pathsList" class="list">
+        {% for p in config.get('monitored_paths', []) %}
+          <li class="list__item">
+            <span>{{ p }}</span>
+            <button class="btn btn--xs btn--ghost" data-remove-path="{{ p }}" type="button">🗑️ Remove</button>
+          </li>
+        {% else %}
+          <li class="list__item">(none)</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card__title">Authorized Destinations</div>
+      <div class="row row--stack">
+        <label class="field">
+          <span class="field__label">Add destination</span>
+          <input id="newDest" class="input" placeholder="e.g. backup.company.com" />
+        </label>
+        <button id="btnAddDest" class="btn btn--good" type="button">➕ Add Destination</button>
+      </div>
+      <ul id="destList" class="list">
+        {% for d in config.get('authorized_destinations', []) %}
+          <li class="list__item">
+            <span>{{ d }}</span>
+            <button class="btn btn--xs btn--ghost" data-remove-dest="{{ d }}" type="button">🗑️ Remove</button>
+          </li>
+        {% else %}
+          <li class="list__item">(none)</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="card card--wide">
+      <div class="card__title">Network Risk Scanning</div>
+      <div class="row row--stack">
+        <label class="field field--inline" style="align-items: center;">
+          <input id="networkScanEnabled" type="checkbox" {% if config.get('network_scan', {}).get('enabled') %}checked{% endif %} />
+          <span class="field__label" style="margin: 0;">Enable network risk scanning</span>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Targets (IP, hostname, or CIDR; one per line)</span>
+          <textarea id="networkTargets" class="input" rows="4" placeholder="127.0.0.1&#10;192.168.1.0/24">{{ config.get('network_scan', {}).get('targets', ['127.0.0.1']) | join('\n') }}</textarea>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Ports (comma separated)</span>
+          <input id="networkPorts" class="input" value="{{ config.get('network_scan', {}).get('ports', [21,22,23,80,135,139,443,445,3389]) | join(', ') }}" placeholder="21, 22, 23, 80, 443, 445, 3389" />
+        </label>
+
+        <div class="row">
+          <label class="field" style="flex: 1; min-width: 180px;">
+            <span class="field__label">Scan interval (seconds)</span>
+            <input id="networkScanInterval" type="number" min="30" max="86400" class="input" value="{{ config.get('network_scan', {}).get('scan_interval_seconds', 900) }}" />
+          </label>
+          <label class="field" style="flex: 1; min-width: 180px;">
+            <span class="field__label">Connection timeout (seconds)</span>
+            <input id="networkTimeout" type="number" min="0.1" max="5" step="0.1" class="input" value="{{ config.get('network_scan', {}).get('timeout_seconds', 0.35) }}" />
+          </label>
+          <label class="field" style="flex: 1; min-width: 180px;">
+            <span class="field__label">Max hosts per CIDR</span>
+            <input id="networkMaxHosts" type="number" min="1" max="4096" class="input" value="{{ config.get('network_scan', {}).get('max_hosts_per_cidr', 32) }}" />
+          </label>
+          <label class="field" style="flex: 1; min-width: 180px;">
+            <span class="field__label">Alert cooldown (seconds)</span>
+            <input id="networkAlertCooldown" type="number" min="60" max="86400" class="input" value="{{ config.get('network_scan', {}).get('alert_cooldown_seconds', 1800) }}" />
+          </label>
+        </div>
+
+        <div class="hint">Use small target ranges first. CIDR targets are intentionally capped by max hosts per CIDR to keep scans fast.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card__title">Detection Patterns</div>
+      <div class="tablewrap">
+        <table class="table">
+          <thead>
+            <tr><th>Type</th><th>Regex</th></tr>
+          </thead>
+          <tbody>
+            {% for name, pat in patterns.items() %}
+              <tr><td>{{ name }}</td><td class="mono">{{ pat }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+{% endblock %}

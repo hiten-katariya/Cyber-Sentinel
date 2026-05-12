@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cyber Sentinel - DLP System</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}?v={{ range(1, 9999) | random }}" />
+    {% block page_script %}{% endblock %}
+  </head>
+  <body>
+    <div class="toast-container" id="toastContainer"></div>
+    <header class="appbar">
+      <div class="appbar__left">
+        <div class="appbar__title">🛡️ Cyber Sentinel</div>
+        <div class="appbar__subtitle">Advanced Data Loss Prevention System</div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <button id="themeToggle" class="theme-toggle" title="Toggle theme">🌙</button>
+        <div id="statusPill" class="pill">⬤ STOPPED</div>
+      </div>
+    </header>
+
+    <nav class="tabs">
+      <a class="tab {{ 'is-active' if request.path.startswith('/monitoring') else '' }}" href="{{ url_for('monitoring_page') }}">Monitoring</a>
+      <a class="tab {{ 'is-active' if request.path.startswith('/dashboard') else '' }}" href="{{ url_for('dashboard_page') }}">Dashboard</a>
+      <a class="tab {{ 'is-active' if request.path.startswith('/configuration') else '' }}" href="{{ url_for('configuration_page') }}">Configuration</a>
+      <a class="tab {{ 'is-active' if request.path.startswith('/advanced') else '' }}" href="{{ url_for('advanced_page') }}">Advanced</a>
+      <a class="tab {{ 'is-active' if request.path.startswith('/logs') else '' }}" href="{{ url_for('logs_page') }}">Logs</a>
+      <a class="tab {{ 'is-active' if request.path.startswith('/alerts') else '' }}" href="{{ url_for('alerts_page') }}">Alerts</a>
+    </nav>
+
+    <main class="container">
+      {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='app.js') }}?v={{ range(1, 9999) | random }}"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

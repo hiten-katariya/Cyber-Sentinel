@@ -1,0 +1,28 @@
+PAYMENT PROCESSING RECORDS
+==========================
+
+Transaction #TX-2025-001
+Date: 2025-12-20
+Customer: Jane Doe
+Card Number: 6011-1111-1111-1117
+CVV: 123
+Amount: $1,250.00
+Email: jane.doe@email.com
+
+Transaction #TX-2025-002
+Date: 2025-12-21
+Customer: Robert Smith
+Card Number: 3530-1113-3330-0000
+CVV: 456
+Amount: $3,750.50
+Email: robert.smith@payments.com
+Phone: (555) 789-0123
+
+Transaction #TX-2025-003
+Date: 2025-12-22
+Customer: Linda Green
+Card Number: 5105-1051-0510-5100
+CVV: 789
+Amount: $500.00
+SSN: 678-90-1234
+Email: linda.green@secure.com

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block page_script %}
+<script>
+console.log("[ALERTS] Setting DLP_PAGE in head block");
+window.DLP_PAGE = 'alerts';
+</script>
+{% endblock %}
+
+{% block content %}
+<script>
+// Backup: Set DLP_PAGE if it wasn't set by head script (browser cache issue)
+if (typeof window.DLP_PAGE === 'undefined') {
+    console.warn("[ALERTS] DLP_PAGE not set, initializing from content block");
+    window.DLP_PAGE = 'alerts';
+}
+</script>
+  <section class="banner">
+    <div class="banner__strip"></div>
+    <div style="flex: 1;">
+      <div class="banner__title">🚨 Security Alerts</div>
+      <div class="banner__subtitle">Cyber Sentinel threat detection and incident management</div>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <button id="btnPrintAlerts" class="btn btn--xs" type="button">🖨️ Print</button>
+      <button id="btnToggleAutoRefreshAlerts" class="btn btn--xs" type="button" title="Toggle auto-refresh">⏸ Pause</button>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="card card--wide">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div style="display: flex; gap: 10px;">
+          <button id="btnRefreshAlerts" class="btn" type="button">Refresh</button>
+          <button id="btnClearAlerts" class="btn btn--bad" type="button">Clear Alerts</button>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <input type="text" id="searchAlerts" class="input input--sm" placeholder="Search..." style="width: 200px;" />
+          <select id="filterSeverity" class="input input--sm" style="width: 120px;">
+            <option value="">All Severity</option>
+            <option value="CRITICAL">Critical</option>
+            <option value="HIGH">High</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="LOW">Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="hint" id="alertsHint" style="margin-bottom: 10px;">—</div>
+
+      <div class="tablewrap">
+        <table class="table" id="alertsTable">
+          <thead>
+            <tr>
+              <th style="width: 40px;"></th>
+              <th style="width: 180px;">Time</th>
+              <th style="width: 100px;">Severity</th>
+              <th>Message</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+        <div style="color: var(--muted); font-size: 12px;" id="paginationInfo">Page 1 of 1</div>
+        <div style="display: flex; gap: 5px;">
+          <button id="btnFirstPage" class="btn btn--xs" type="button">⏮️ First</button>
+          <button id="btnPrevPage" class="btn btn--xs" type="button">⬅️ Prev</button>
+          <button id="btnNextPage" class="btn btn--xs" type="button">Next ➡️</button>
+          <button id="btnLastPage" class="btn btn--xs" type="button">Last ⏭️</button>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

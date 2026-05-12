@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drag Drop Test</title>
+    <style>
+        .drop-zone {
+            border: 2px dashed #666;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            background: #f0f0f0;
+            cursor: pointer;
+            margin: 20px;
+        }
+        .drop-zone-active {
+            border-color: green !important;
+            background: rgba(0,255,0,0.1) !important;
+        }
+        #result {
+            margin: 20px;
+            padding: 10px;
+            background: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Drag & Drop Test</h1>
+    
+    <div id="dropZone" class="drop-zone">
+        <div style="font-size: 40px;">📁</div>
+        <div>Drop files here or click to browse</div>
+    </div>
+    
+    <input type="file" id="fileInput" style="display: none;" />
+    
+    <div id="result">No file selected</div>
+    
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const result = document.getElementById('result');
+        
+        console.log('Elements:', { dropZone, fileInput, result });
+        
+        // Click to browse
+        dropZone.addEventListener('click', () => {
+            console.log('Drop zone clicked');
+            fileInput.click();
+        });
+        
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            const files = e.target.files;
+            if (files.length > 0) {
+                result.textContent = 'File selected: ' + files[0].name;
+                console.log('File selected:', files[0].name);
+            }
+        });
+        
+        // Drag over
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Drag over');
+            dropZone.classList.add('drop-zone-active');
+        });
+        
+        // Drag leave
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Drag leave');
+            dropZone.classList.remove('drop-zone-active');
+        });
+        
+        // Drop
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('File dropped!');
+            dropZone.classList.remove('drop-zone-active');
+            
+            const files = e.dataTransfer.files;
+            console.log('Files:', files);
+            if (files.length > 0) {
+                result.textContent = 'File dropped: ' + files[0].name;
+                console.log('File name:', files[0].name);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block page_script %}
+<script>window.DLP_PAGE = 'advanced';</script>
+{% endblock %}
+{% block content %}
+<div class="banner">
+  <div class="banner__strip"></div>
+  <div>
+    <div class="banner__title">⚙️ Advanced Security Controls</div>
+    <div class="banner__subtitle">Cyber Sentinel policy management and system administration</div>
+  </div>
+</div>
+
+<div class="grid">
+  <!-- Whitelist Management -->
+  <div class="card card--wide">
+    <div class="card__title">Whitelist Management</div>
+    <p style="color: var(--muted); font-size: 13px; margin-bottom: 12px;">
+      Files or patterns in the whitelist will be ignored during scanning. Use * for wildcards.
+    </p>
+    
+    <div class="field--inline">
+      <input type="text" id="whitelistInput" class="input" placeholder="e.g., C:\safe\file.txt or *.log" />
+      <button id="btnAddWhitelist" class="btn btn--good">Add to Whitelist</button>
+    </div>
+    
+    <div class="hint" style="margin-top: 10px; margin-bottom: 10px;" id="whitelistHint">Add files to skip during scanning</div>
+    
+    <ul id="whitelistList" class="list"></ul>
+  </div>
+
+  <!-- Quarantine Management -->
+  <div class="card">
+    <div class="card__title">Quarantine Management</div>
+    <div class="row row--stack">
+      <div class="field">
+        <label class="field__label">Auto-Quarantine</label>
+        <div style="padding: 10px; border: 1px solid var(--border); border-radius: 12px; text-align: center;">
+          <div style="font-size: 18px; font-weight: 700; margin-bottom: 8px;" id="quarantineStatusAdv">DISABLED</div>
+          <button id="btnToggleQuarantineAdv" class="btn">Enable Quarantine</button>
+        </div>
+      </div>
+      <div class="hint">When enabled, files with sensitive data are automatically moved to quarantine folder</div>
+    </div>
+  </div>
+
+  <!-- Backup & Restore -->
+  <div class="card">
+    <div class="card__title">Backup & Restore</div>
+    <div class="row row--stack">
+      <button id="btnCreateBackup" class="btn btn--good">Create Backup Now</button>
+      <div class="field">
+        <label class="field__label">Restore from Backup</label>
+        <input type="text" id="restoreFile" class="input" placeholder="backups/dlp_config_backup_*.json" />
+      </div>
+      <button id="btnRestoreBackup" class="btn btn--bad">Restore Backup</button>
+      <div class="hint" id="backupStatus">Backups are saved in the backups/ folder</div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="card card--wide">
+    <div class="card__title">Quick Actions</div>
+    <div class="row">
+      <button id="btnClearAllAlerts" class="btn btn--bad">Clear All Alerts</button>
+      <button id="btnExportConfigAdv" class="btn">Export Configuration</button>
+      <button id="btnViewQuarantine" class="btn">View Quarantine Folder</button>
+    </div>
+    <div class="hint" id="actionStatus">Perform system management tasks</div>
+  </div>
+</div>
+
+<script>
+  window.DLP_PAGE = 'advanced';
+</script>
+{% endblock %}

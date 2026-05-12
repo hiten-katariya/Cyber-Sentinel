@@ -1,0 +1,282 @@
+CYBER SENTINEL - DEMONSTRATION SCRIPT FOR PRESENTATION
+======================================================
+
+PREPARATION (Before presentation)
+---------------------------------
+1. Start Cyber Sentinel: python dlp_web.py
+2. Open browser to: http://127.0.0.1:5000
+3. Have the monitored_data/ folder open in File Explorer (for visual reference)
+4. Clear any previous alerts: Advanced page → Clear All Alerts
+5. Set theme to your preference (Dark/Light toggle in header)
+
+DEMONSTRATION FLOW (15-20 minutes)
+===================================
+
+PART 1: INTRODUCTION & OVERVIEW (2 minutes)
+-------------------------------------------
+"Today I'm presenting Cyber Sentinel, an advanced Data Loss Prevention system 
+that protects sensitive data by monitoring files and detecting security threats 
+in real-time."
+
+Show: Dashboard page
+- Point out the clean, modern interface
+- Explain the statistics cards showing system metrics
+- Mention the dark/light theme toggle (demonstrate it)
+
+PART 2: SYSTEM CONFIGURATION (3 minutes)
+-----------------------------------------
+Go to: Configuration page
+
+"First, let's configure what folders we want to monitor and set up alerts."
+
+1. Show the monitored paths:
+   - Point to: monitored_data folder (already configured)
+   
+2. Show authorized destinations:
+   - Explain: "These are safe external locations where files can be transferred"
+   - Example: internal_server.com, backup.company.com
+
+3. Email alerts configuration:
+   - Show SMTP settings
+   - Explain: "System sends email notifications when threats are detected"
+
+4. Show the folder picker:
+   - Click "Browse Folder" button
+   - Demonstrate how users can easily add folders to monitor
+
+"The system uses regex patterns to detect 8 types of sensitive data:
+- Credit card numbers
+- Social Security Numbers (SSN)
+- Email addresses
+- Phone numbers
+- IP addresses
+- API keys
+- and more"
+
+PART 3: REAL-TIME MONITORING DEMO (5 minutes)
+----------------------------------------------
+Go to: Monitoring page
+
+"Now let's see Cyber Sentinel in action with real-time monitoring."
+
+1. Show the current status (STOPPED)
+
+2. Click "Start Monitoring"
+   - Status pill changes to green "MONITORING"
+   - Toast notification appears: "Monitoring started"
+   - Show the keyboard shortcut hint: "You can also use Ctrl+S to start"
+
+3. Wait 5-10 seconds for automatic scan
+   - Point out: "The system automatically scans at regular intervals"
+
+4. Click "Manual Scan" button
+   - Progress bar appears
+   - Shows scan duration when complete
+   - Toast notification: "Scan completed in X seconds"
+
+5. Demonstrate drag-and-drop testing:
+   - Open File Explorer with monitored_data/
+   - Drag customer_database.txt to the drop zone
+   - Show how file path auto-fills
+
+6. Test Transfer feature:
+   - File: monitored_data/customer_database.txt
+   - Destination: unknown_external_server.com
+   - Click "Test Transfer"
+   - Result: "Transfer BLOCKED" (shown in red)
+   
+   Then test with authorized destination:
+   - Destination: internal_server.com
+   - Result: "Transfer ALLOWED" (shown in green)
+
+7. Show quick actions:
+   - Click "Quick Scan Downloads" (if you have files there)
+   - Show the instant feedback and progress
+
+8. Click "Stop Monitoring"
+   - Status changes back to STOPPED
+   - Show keyboard shortcut: Ctrl+X
+
+PART 4: SECURITY ALERTS ANALYSIS (4 minutes)
+---------------------------------------------
+Go to: Alerts page
+
+"After scanning, let's examine the security threats detected."
+
+1. Show the alerts table:
+   - Color-coded severity (Critical = red, High = orange)
+   - Timestamps
+   - Alert messages
+
+2. Demonstrate search/filter:
+   - Type "credit" in search box → shows only credit card alerts
+   - Select "HIGH" severity filter → shows only high-severity alerts
+   - Clear filters
+
+3. Expand an alert (click on a row):
+   - Show detailed JSON information
+   - Point out: file path, number of findings, file hash
+   - Show file size display: "Notice the human-readable file size"
+
+4. Pagination:
+   - Show: "Page 1 of X (Y alerts)"
+   - Demonstrate navigation: First, Previous, Next, Last
+
+5. Demonstrate print view:
+   - Click "Print" button
+   - Show how it creates a clean printable report
+
+6. Show auto-refresh toggle:
+   - Click "Pause" to stop auto-refresh
+   - Click "Resume" to restart
+
+PART 5: DASHBOARD & STATISTICS (3 minutes)
+-------------------------------------------
+Go to: Dashboard page
+
+"The dashboard provides executive-level visibility into security metrics."
+
+1. Point out the key metrics:
+   - Total Alerts: X
+   - Critical Alerts: Y
+   - Total Scans performed: Z
+   - Files Checked: N
+   - Last Scan Duration
+
+2. Show the severity distribution chart:
+   - Visual breakdown of alert types
+   - Percentages and counts
+
+3. Show the pattern detection chart:
+   - Which types of sensitive data were found
+   - Credit cards, SSNs, emails, etc.
+
+4. Export functionality:
+   - Click "Export CSV"
+   - Toast notification: "Exported to alerts_export_YYYYMMDD.csv"
+   - Explain: "Security teams can analyze this data in Excel or their SIEM"
+   
+   - Click "Export JSON"
+   - Show the JSON export path
+
+5. Quarantine feature:
+   - Show current status: "ENABLED/DISABLED"
+   - Click toggle: "When enabled, files with sensitive data are automatically 
+     moved to a secure quarantine folder"
+
+PART 6: ADVANCED FEATURES (3 minutes)
+--------------------------------------
+Go to: Advanced page
+
+"Cyber Sentinel includes enterprise-grade policy management."
+
+1. Whitelist Management:
+   - Explain: "Sometimes files contain test data or are false positives"
+   - Add to whitelist: "safe_document.txt"
+   - Show the whitelist list
+   - Remove an item to demonstrate
+
+2. Quarantine Controls:
+   - Show current status
+   - Toggle on: "Files with threats are now automatically quarantined"
+   - Explain the metadata tracking (original path, hash, timestamp)
+   - Click "View Quarantine Folder"
+
+3. Backup & Recovery:
+   - Click "Create Backup"
+   - Toast shows: "Backup created: dlp_config_backup_YYYYMMDD.json"
+   - Explain: "Critical for disaster recovery and compliance"
+   - Show restore function (don't actually restore)
+
+4. Maintenance:
+   - Show "Clear All Alerts" button
+   - Explain: "Administrators can clear alerts after investigation"
+
+PART 7: SYSTEM LOGS (2 minutes)
+--------------------------------
+Go to: Logs page
+
+"Every action is logged for audit trails and troubleshooting."
+
+1. Show the log output:
+   - Cyber Sentinel branding in logs
+   - Timestamps
+   - Log levels (INFO, WARNING, ERROR)
+
+2. Demonstrate filtering:
+   - Search for: "scan"
+   - Filter by level: "INFO"
+   - Show log statistics: "Showing X of Y log lines"
+
+3. Adjust lines shown:
+   - Change from 250 to 500
+   - Click Refresh
+
+PART 8: KEY FEATURES RECAP (1 minute)
+--------------------------------------
+"Let me summarize what makes Cyber Sentinel powerful:"
+
+✓ Real-time monitoring with background scanning
+✓ 8 sensitive data pattern types detected
+✓ Color-coded severity alerts (Critical, High, Medium, Low)
+✓ Smart search and filtering
+✓ Export to CSV/JSON for analysis
+✓ Quarantine dangerous files automatically
+✓ Whitelist management for false positives
+✓ Backup & restore configuration
+✓ Complete audit logs
+✓ Modern UI with dark/light themes
+✓ Keyboard shortcuts (Ctrl+S, Ctrl+X)
+✓ Progress indicators and toast notifications
+✓ Drag-and-drop file testing
+✓ Transfer simulation and blocking
+
+CLOSING
+-------
+"This system demonstrates enterprise-level DLP capabilities suitable for:
+- Financial institutions protecting payment card data
+- Healthcare protecting patient records (HIPAA)
+- Any organization handling sensitive customer information
+
+Questions?"
+
+TROUBLESHOOTING TIPS
+====================
+If no alerts appear:
+- Manually scan again
+- Check Configuration → Monitored Paths is set to ./monitored_data
+- Verify files exist in monitored_data folder
+
+If theme toggle doesn't work:
+- Hard refresh: Ctrl+Shift+R
+- Check browser console for errors
+
+If API key prompt appears:
+- Check dlp_api_key.txt file in project root
+- Copy the key and paste when prompted
+- It will be saved in browser localStorage
+
+BONUS DEMONSTRATIONS
+====================
+1. Show the response time:
+   - Manual scan completes in < 2 seconds
+   - Dashboard updates every 5 seconds
+   - Real-time status updates every 2 seconds
+
+2. Show keyboard shortcuts:
+   - Ctrl+S → Start monitoring
+   - Ctrl+X → Stop monitoring
+   - Demonstrate live during presentation
+
+3. Show mobile responsiveness:
+   - Resize browser window
+   - Show how UI adapts to different screen sizes
+
+4. Show the file size display:
+   - Expand an alert
+   - Point out: "File Size: 1.2 KB" (human-readable)
+
+5. Show scan statistics over time:
+   - Run multiple scans
+   - Show how "Total Scans" increments
+   - Show "Files Checked" counter growing

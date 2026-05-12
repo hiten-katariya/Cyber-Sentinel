@@ -1,0 +1,97 @@
+CYBER SENTINEL (DLP SYSTEM) — HOW IT WORKS (OVERVIEW)
+
+What Cyber Sentinel does (high level)
+- Cyber Sentinel is a local, web-based Data Loss Prevention (DLP) system that scans files in configured folders, detects sensitive data patterns (regex-based), raises alerts, and can optionally quarantine risky files. It also provides a dashboard, exports, logs, whitelist rules, and backup/restore of config.
+
+Main components (and what each one is responsible for)
+
+1) Core DLP engine: dlp_monitor.py
+- Holds the scanning logic (read file -> pattern match -> generate findings).
+- Manages “alerts” (in-memory list), severity, and alert statistics.
+- Handles quarantine (move file into quarantine/ + write metadata).
+- Tracks scan counters (total scans, files checked, last scan duration).
+- Writes system logs to cyber_sentinel.log.
+
+2) Web server + API layer: dlp_web.py
+- Flask app that serves HTML pages and JSON API endpoints.
+- Implements API-key authentication (expects X-API-Key header).
+- Starts/stops background monitoring thread and exposes system status.
+- Exposes endpoints for alerts, logs tailing, export, statistics, whitelist, quarantine controls, backup/restore.
+
+3) Configuration store: dlp_config.json
+- The “source of truth” for what to monitor (folders), allowed destinations, email/SMTP settings, quarantine settings, etc.
+- The web UI updates this file through API calls.
+
+4) HTML UI pages (server-rendered templates): templates/
+- base.html is the shared layout (top bar, tabs, loads CSS/JS, theme button, toast container).
+- monitoring.html is start/stop + manual scan + transfer test + progress bar + quick actions.
+- alerts.html shows alerts table with color-coded severity, search/filter, pagination, expand-to-view details.
+- dashboard.html shows aggregated stats (alerts + scan stats) and charts.
+- advanced.html manages whitelist, quarantine toggle, backup/restore.
+- logs.html shows recent log lines + search/filter.
+
+5) Front-end behavior (interactivity): static/app.js
+- Calls the JSON APIs using fetch() and attaches X-API-Key.
+- Implements: theme toggle (adds/removes light-mode on <html>), keyboard shortcuts, toasts, progress bar updates, drag/drop testing, alerts pagination/search/collapse, logs search/filter, dashboard refresh/charts.
+
+6) Styling / theme: static/app.css
+- Uses CSS variables for colors (dark mode defaults, light mode overrides under :root.light-mode).
+- Defines severity classes (critical/high/medium/low), print styles, toast styles, and transitions.
+
+7) Sample monitored content: monitored_data/
+- Example files/folder you can scan to see detections.
+
+How the system works (end-to-end workflows)
+
+A) Startup
+- Run: python .\dlp_web.py
+- Flask starts at http://127.0.0.1:5000.
+- On first run, an API key may be created and saved, and the UI prompts for it and stores it in browser localStorage.
+
+B) Authentication (API key)
+- Every API request from the browser includes header: X-API-Key: <your key>.
+- If missing/wrong, the backend returns 401; the UI clears the saved key and prompts again.
+
+C) Monitoring loop (background scanning)
+- When you press “Start Monitoring”, the backend starts a worker thread (inside the Flask process).
+- On each interval, it scans configured monitored paths:
+  iterate files -> skip too-large files -> read content -> run pattern detection -> if findings, create alert -> optionally quarantine.
+
+D) Manual scan
+- “Manual Scan” triggers a scan once immediately.
+- The UI shows a progress bar and measures duration on the client side (stopwatch around the API call). The backend also stores last scan duration in scan stats.
+
+E) Detection engine
+- For each file:
+  read file content (text mode with error handling)
+  apply regex patterns (emails, credit cards, SSNs, API keys, etc.)
+  if matches exist -> generate an alert and include details (file path, match counts, hash, file size)
+
+F) Alerts pipeline
+- Alerts are appended to an in-memory list (restarting the server resets them unless you export first).
+- Alerts appear in the Alerts page:
+  table rows show timestamp, severity (color-coded), message
+  expand/collapse row shows JSON “details” and file size (formatted)
+
+G) Quarantine (optional)
+- If quarantine is enabled, a file that triggers detection gets moved into quarantine/<timestamp>/filename.
+- A metadata file is written (original path, hash, timestamp, etc.) so you can trace what happened.
+
+H) Whitelist / policy rules
+- Whitelist entries let you ignore certain file paths/patterns.
+- During scanning, if a file matches the whitelist, it is skipped and does not generate alerts.
+
+I) Dashboard + statistics
+- The Dashboard calls /api/statistics and other report endpoints.
+- It combines:
+  alert stats (counts by severity / pattern)
+  scan stats (total scans, files checked, last scan duration)
+
+J) Logs
+- Backend writes to cyber_sentinel.log.
+- The Logs page calls /api/logs?lines=... (tail) and then filters client-side (search + level filter).
+
+Key limitations
+- This is a local scanning + rules + alerting system (good for demo / prototype).
+- Alerts are in-memory (unless exported). Restarting Flask clears them.
+- Regex-based detection can produce false positives/negatives.

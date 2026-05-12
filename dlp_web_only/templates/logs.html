@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block page_script %}
+<script>
+  console.log('[LOGS] Setting DLP_PAGE to logs');
+  window.DLP_PAGE = 'logs';
+  console.log('[LOGS] DLP_PAGE is now:', window.DLP_PAGE);
+</script>
+{% endblock %}
+
+{% block content %}
+  <script>
+    if (typeof window.DLP_PAGE === 'undefined') {
+      console.log('[LOGS BACKUP] Setting DLP_PAGE to logs via content block');
+      window.DLP_PAGE = 'logs';
+    }
+  </script>
+  <section class="banner">
+    <div class="banner__strip banner__strip--muted"></div>
+    <div>
+      <div class="banner__title">📋 System Logs</div>
+      <div class="banner__subtitle">Cyber Sentinel activity monitoring - view recent lines from cyber_sentinel.log</div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="card card--wide">
+      <div class="row" style="gap: 12px; flex-wrap: wrap;">
+        <button id="btnRefreshLogs" class="btn" type="button">Refresh</button>
+        <label class="field field--inline">
+          <span class="field__label">Lines</span>
+          <input id="logLines" class="input input--sm" value="250" />
+        </label>
+        <label class="field field--inline" style="flex: 1; min-width: 250px;">
+          <span class="field__label">Search</span>
+          <input id="searchLogs" class="input input--sm" placeholder="Search logs..." />
+        </label>
+        <select id="filterLogLevel" class="input input--sm">
+          <option value="">All Levels</option>
+          <option value="ERROR">ERROR</option>
+          <option value="WARNING">WARNING</option>
+          <option value="INFO">INFO</option>
+        </select>
+        <button id="btnClearLogFilter" class="btn btn--ghost" type="button">Clear Filter</button>
+        <div class="hint" id="logsHint">—</div>
+      </div>
+      <div id="logStats" class="hint" style="margin-top: 8px;"></div>
+      <pre id="logsBox" class="codebox"></pre>
+    </div>
+  </section>
+{% endblock %}

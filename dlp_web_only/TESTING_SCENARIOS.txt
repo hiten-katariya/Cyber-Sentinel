@@ -1,0 +1,417 @@
+CYBER SENTINEL - TESTING SCENARIOS
+===================================
+
+These scenarios will help you thoroughly test and demonstrate all features.
+
+SCENARIO 1: Initial Setup & Configuration
+------------------------------------------
+Goal: Configure the system for first use
+
+Steps:
+1. Start server: python dlp_web.py
+2. Open browser: http://127.0.0.1:5000
+3. Enter API key when prompted (from dlp_api_key.txt)
+4. Go to Configuration page
+5. Verify monitored path: ./monitored_data
+6. Add authorized destination: internal_server.com
+7. Save configuration
+8. Verify: Toast notification "Configuration saved"
+
+Expected Result:
+✓ System configured successfully
+✓ Monitored path set correctly
+✓ Ready to scan files
+
+SCENARIO 2: Detect Credit Card Data Leak
+-----------------------------------------
+Goal: Show system detecting credit card numbers
+
+Test File: customer_database.txt
+Contains: 3 credit card numbers
+
+Steps:
+1. Go to Monitoring page
+2. Click "Start Monitoring" (or Ctrl+S)
+3. Wait for automatic scan OR click "Manual Scan"
+4. Go to Alerts page
+5. Search for: "credit"
+
+Expected Result:
+✓ Multiple HIGH severity alerts
+✓ Each alert shows: credit_card pattern detected
+✓ File details include file path and hash
+✓ Severity color-coded as orange (HIGH)
+
+SCENARIO 3: Detect Multiple Pattern Types
+------------------------------------------
+Goal: Show detection of various sensitive data types
+
+Test File: payment_records.txt
+Contains: Credit cards, SSNs, emails, phone numbers
+
+Steps:
+1. Ensure monitoring is running
+2. Click "Manual Scan"
+3. Go to Alerts page
+4. Expand an alert for payment_records.txt
+
+Expected Result:
+✓ Multiple patterns detected in single file
+✓ Alert details show: {"credit_card": 3, "ssn": 1, "email": 3, "phone": 2}
+✓ File hash calculated and displayed
+✓ File size shown in human-readable format
+
+SCENARIO 4: API Key Exposure Detection
+---------------------------------------
+Goal: Detect leaked API keys and credentials
+
+Test File: api_keys_config.txt
+Contains: API keys, passwords, IP addresses
+
+Steps:
+1. Manual scan
+2. Go to Alerts page
+3. Search for: "api"
+4. Expand alert for api_keys_config.txt
+
+Expected Result:
+✓ HIGH severity alert for API keys
+✓ Multiple api_key patterns detected
+✓ Also detects ip_address patterns
+✓ Shows count of each pattern type
+
+SCENARIO 5: Transfer Blocking
+------------------------------
+Goal: Demonstrate file transfer control
+
+Steps:
+1. Go to Monitoring page
+2. In "Test File Transfer" section:
+   File path: monitored_data/customer_database.txt
+   Destination: malicious_external_server.com
+3. Click "Test Transfer"
+
+Expected Result:
+✓ "✗ Transfer blocked" message (red)
+✓ Toast notification shows error
+
+Now test authorized transfer:
+4. Change destination to: internal_server.com
+5. Click "Test Transfer"
+
+Expected Result:
+✓ "✓ Transfer allowed" message (green)
+✓ Toast notification shows success
+
+SCENARIO 6: Whitelist Feature
+------------------------------
+Goal: Show how to mark files as safe
+
+Test File: safe_document.txt
+Contains: Only public information
+
+Steps:
+1. Go to Advanced page
+2. In Whitelist section, add: safe_document.txt
+3. Click "Add to Whitelist"
+4. Go to Monitoring page
+5. Click "Manual Scan"
+6. Go to Alerts page
+7. Search for: "safe"
+
+Expected Result:
+✓ No alerts for safe_document.txt
+✓ File is skipped during scanning
+✓ Whitelist shows the entry in Advanced page
+
+SCENARIO 7: Quarantine Dangerous Files
+---------------------------------------
+Goal: Automatically isolate files with sensitive data
+
+Steps:
+1. Go to Dashboard page
+2. Enable Quarantine (toggle button)
+3. Go to Monitoring page
+4. Click "Manual Scan"
+5. Wait for scan to complete
+6. Go to Advanced page
+7. Click "View Quarantine Folder"
+
+Expected Result:
+✓ Files with sensitive data moved to quarantine/
+✓ Metadata files created (JSON with details)
+✓ Original files no longer in monitored_data/
+✓ Quarantine status shows "ENABLED"
+
+SCENARIO 8: Export Alerts for Analysis
+---------------------------------------
+Goal: Export data for security team review
+
+Steps:
+1. Ensure you have several alerts (run scans if needed)
+2. Go to Dashboard page
+3. Click "Export CSV"
+4. Wait for toast notification
+5. Open the exported file in Excel/text editor
+6. Click "Export JSON"
+7. Open the JSON file
+
+Expected Result:
+✓ CSV file created: alerts_export_YYYYMMDD_HHMMSS.csv
+✓ Contains: timestamp, severity, message, file path
+✓ JSON file created with full alert details
+✓ Both files in project root directory
+
+SCENARIO 9: Search and Filter Alerts
+-------------------------------------
+Goal: Show powerful alert management
+
+Steps:
+1. Go to Alerts page (ensure 20+ alerts exist)
+2. Test search:
+   - Search: "customer" → shows only customer_database.txt alerts
+   - Clear search
+   - Search: "payment" → shows payment_records.txt alerts
+3. Test severity filter:
+   - Select: "HIGH" → shows only high severity
+   - Select: "CRITICAL" → shows only critical
+   - Select: "All Severities"
+4. Test pagination:
+   - Click "Next" to go to page 2
+   - Click "Last" to go to last page
+   - Click "First" to return to page 1
+
+Expected Result:
+✓ Search filters results instantly
+✓ Severity filter works correctly
+✓ Pagination shows: "Page X of Y (Z alerts)"
+✓ Navigation buttons enable/disable appropriately
+
+SCENARIO 10: Dashboard Statistics
+----------------------------------
+Goal: Show executive dashboard with metrics
+
+Steps:
+1. Run multiple scans to generate data
+2. Go to Dashboard page
+3. Wait for auto-refresh (or manually refresh)
+
+Expected Result:
+✓ Total Alerts count displayed
+✓ Critical Alerts count (if any)
+✓ High Alerts count
+✓ Whitelist count
+✓ Total Scans performed
+✓ Files Checked counter
+✓ Last Scan Duration (e.g., "3s" or "1m 25s")
+✓ Severity distribution chart with percentages
+✓ Pattern detection chart showing types found
+
+SCENARIO 11: System Logs Review
+--------------------------------
+Goal: Show audit trail and troubleshooting
+
+Steps:
+1. Perform several actions (start/stop monitoring, scans, config changes)
+2. Go to Logs page
+3. Test search: "Cyber Sentinel"
+4. Test filter: Select "INFO"
+5. Change lines: 500
+6. Click Refresh
+
+Expected Result:
+✓ All logs show "[Cyber Sentinel]" branding
+✓ Search filters log entries
+✓ Level filter shows only selected log level
+✓ Log statistics updated: "Showing X of Y log lines"
+✓ Logs show: monitoring started/stopped, scans, file operations
+
+SCENARIO 12: Backup and Recovery
+---------------------------------
+Goal: Demonstrate configuration backup
+
+Steps:
+1. Go to Advanced page
+2. Click "Create Backup"
+3. Note the backup filename in toast notification
+4. Modify configuration (go to Configuration page, change something)
+5. Return to Advanced page
+6. Enter backup filename in "Restore File" field
+7. Click "Restore Backup" (after confirmation)
+
+Expected Result:
+✓ Backup file created: dlp_config_backup_YYYYMMDD_HHMMSS.json
+✓ Toast shows success
+✓ Restore prompts for confirmation
+✓ Configuration restored to previous state
+
+SCENARIO 13: Theme Switching
+-----------------------------
+Goal: Show UI adaptability
+
+Steps:
+1. On any page, click theme toggle button (🌙)
+2. Observe UI changes
+3. Click again (☀️)
+
+Expected Result:
+✓ Icon changes: 🌙 → ☀️
+✓ Background changes: black → light gray
+✓ Cards change: dark gray → white
+✓ Text changes: light → dark
+✓ Smooth transitions (0.3s)
+✓ Theme persists after page refresh
+
+SCENARIO 14: Keyboard Shortcuts
+--------------------------------
+Goal: Show power user features
+
+Steps:
+1. Go to Monitoring page
+2. Press Ctrl+S
+
+Expected Result:
+✓ Monitoring starts
+✓ Toast notification appears
+✓ No need to click button
+
+3. Press Ctrl+X
+
+Expected Result:
+✓ Monitoring stops
+✓ Toast notification appears
+
+SCENARIO 15: Drag and Drop Testing
+-----------------------------------
+Goal: Show intuitive file testing
+
+Steps:
+1. Go to Monitoring page
+2. Open File Explorer to monitored_data/
+3. Drag customer_database.txt to the drop zone
+4. Verify file path auto-filled
+5. Enter destination: test.com
+6. Click "Test Transfer"
+
+Expected Result:
+✓ Drop zone highlights when file hovers over it
+✓ File path automatically filled
+✓ Transfer test executes
+✓ Result displayed with color coding
+
+SCENARIO 16: Auto-Refresh Control
+----------------------------------
+Goal: Show real-time vs manual control
+
+Steps:
+1. Go to Alerts page
+2. Click "⏸ Pause" button
+3. Observe: alerts no longer auto-refresh
+4. Click "▶️ Resume" button
+5. Observe: auto-refresh resumes every 5 seconds
+
+Expected Result:
+✓ Pause stops automatic refreshing
+✓ Resume restarts automatic refreshing
+✓ Status pill still updates (different interval)
+
+SCENARIO 17: Quick Scan Actions
+--------------------------------
+Goal: Show one-click folder scanning
+
+Steps:
+1. Go to Monitoring page
+2. Click "🚀 Quick Scan Downloads"
+3. Wait for toast notification
+4. Click "🚀 Quick Scan Documents"
+
+Expected Result:
+✓ Toast shows "Scanning Downloads folder..."
+✓ Then "Downloads scan completed"
+✓ Same for Documents folder
+✓ Alerts generated if sensitive data found
+
+SCENARIO 18: Print-Friendly Reports
+------------------------------------
+Goal: Generate printable alert reports
+
+Steps:
+1. Go to Alerts page
+2. Ensure some alerts are visible
+3. Click "Print" button
+4. Preview the print layout
+
+Expected Result:
+✓ Print preview opens
+✓ Navigation and buttons hidden
+✓ Only alert table visible
+✓ Clean, professional layout
+✓ Page breaks appropriate for printing
+
+SCENARIO 19: Multi-Pattern File Detection
+------------------------------------------
+Goal: Comprehensive detection in single file
+
+Test File: employee_contacts.csv
+
+Steps:
+1. Manual scan
+2. Go to Alerts page
+3. Find alert for employee_contacts.csv
+4. Expand the alert details
+
+Expected Result:
+✓ Detects: email, phone, ssn patterns
+✓ Shows count for each pattern type
+✓ CSV format properly handled
+✓ All 5 employees' data detected
+
+SCENARIO 20: Performance Testing
+---------------------------------
+Goal: Show system efficiency
+
+Steps:
+1. Note current scan stats on Dashboard
+2. Go to Monitoring page
+3. Click "Manual Scan"
+4. Watch progress bar
+5. Note scan duration in toast notification
+6. Go to Dashboard
+7. Check updated stats
+
+Expected Result:
+✓ Scan completes in < 5 seconds
+✓ Progress bar shows 30% → 100%
+✓ Toast shows: "Scan completed in Xs"
+✓ Dashboard shows:
+  - Total Scans incremented by 1
+  - Files Checked shows number of files scanned
+  - Last Scan Duration updated
+
+EDGE CASE TESTING
+==================
+
+Test 1: Empty Monitored Folder
+-------------------------------
+Steps: Remove all files from monitored_data/, scan
+Expected: No alerts, scan completes successfully
+
+Test 2: Invalid File Path
+--------------------------
+Steps: Test transfer with non-existent file
+Expected: Error message displayed
+
+Test 3: Large File Handling
+----------------------------
+Steps: Add file > 10MB to monitored_data/
+Expected: File skipped with "file_too_large" status
+
+Test 4: Clear All Alerts
+-------------------------
+Steps: Advanced page → Clear All Alerts
+Expected: Confirmation dialog → All alerts removed
+
+Test 5: Multiple Rapid Scans
+-----------------------------
+Steps: Click Manual Scan 5 times quickly
+Expected: All scans queue and execute, counters accurate

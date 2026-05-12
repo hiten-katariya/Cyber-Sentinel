@@ -1,0 +1,91 @@
+{
+  "export_time": "2026-03-12T21:02:00.490661",
+  "total_alerts": 5,
+  "alerts": [
+    {
+      "timestamp": "2026-03-12T21:01:07.991291",
+      "severity": "HIGH",
+      "message": "Sensitive data detected in file",
+      "details": {
+        "file": "monitored_data\\api_keys_config.txt",
+        "findings": {
+          "ip_address": 4,
+          "aws_key": 1
+        },
+        "hash": "011d67e93633066de88da1ed87a8eed00f7be7c89902cc66b3d7be360dc67089",
+        "file_size": 602
+      }
+    },
+    {
+      "timestamp": "2026-03-12T21:01:07.992271",
+      "severity": "HIGH",
+      "message": "Sensitive data detected in file",
+      "details": {
+        "file": "monitored_data\\customer_database.txt",
+        "findings": {
+          "ssn": 3,
+          "email": 3,
+          "phone": 2
+        },
+        "hash": "06adfacadb72baaec2a885505d40f3b249006244f05491083021942bbeafbf67",
+        "file_size": 497
+      }
+    },
+    {
+      "timestamp": "2026-03-12T21:01:07.993604",
+      "severity": "HIGH",
+      "message": "Sensitive data detected in file",
+      "details": {
+        "file": "monitored_data\\employee_contacts.csv",
+        "findings": {
+          "ssn": 5,
+          "email": 5,
+          "phone": 5
+        },
+        "hash": "910d835ce0475b7a3edd16907799895826cd6a0e748f04cdc1574492644f047e",
+        "file_size": 416
+      }
+    },
+    {
+      "timestamp": "2026-03-12T21:01:07.994159",
+      "severity": "HIGH",
+      "message": "Sensitive data detected in file",
+      "details": {
+        "file": "monitored_data\\payment_records.txt",
+        "findings": {
+          "ssn": 1,
+          "email": 3
+        },
+        "hash": "aa7b2766e272a81fcf31d84e786fad52a10f1f0444d25afe35b4f4d8e9a3a9af",
+        "file_size": 581
+      }
+    },
+    {
+      "timestamp": "2026-03-12T21:01:07.994836",
+      "severity": "HIGH",
+      "message": "Sensitive data detected in file",
+      "details": {
+        "file": "monitored_data\\safe_document.txt",
+        "findings": {
+          "email": 3
+        },
+        "hash": "23d102eca8178979f3354fdce63c8de15f5bb5fe43df96874383a1298f07a09c",
+        "file_size": 580
+      }
+    }
+  ],
+  "statistics": {
+    "total_alerts": 5,
+    "by_severity": {
+      "HIGH": 5
+    },
+    "by_pattern": {
+      "ip_address": 1,
+      "aws_key": 1,
+      "ssn": 3,
+      "email": 4,
+      "phone": 2
+    },
+    "whitelist_count": 0
+  }
+}

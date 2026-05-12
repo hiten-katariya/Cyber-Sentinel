@@ -1,0 +1,341 @@
+================================================================================
+              🛡️  CYBER SENTINEL - DATA LOSS PREVENTION SYSTEM
+                              USER GUIDE
+================================================================================
+
+WHAT IS THIS PROJECT?
+---------------------
+
+This is a Data Loss Prevention (DLP) system with a web interface. It monitors
+folders on your computer and scans files for sensitive information like:
+
+  • Credit card numbers (e.g., 4532-1234-5678-9010)
+  • Social Security Numbers (e.g., 123-45-6789)
+  • Email addresses
+  • Phone numbers
+  • IP addresses
+  • API keys and passwords
+
+When sensitive data is found, the system creates alerts and can optionally
+send email notifications. It also simulates file transfers to check if they
+should be blocked based on the content.
+
+
+WHY USE THIS?
+-------------
+
+  • Prevent accidental sharing of sensitive data
+  • Monitor directories for data leaks
+  • Get alerts when sensitive information is detected
+  • Test if file transfers would expose confidential data
+  • Maintain security compliance (GDPR, PCI DSS, HIPAA)
+
+
+SYSTEM REQUIREMENTS
+-------------------
+
+  • Python 3.7 or higher
+  • Flask 3.0+ (installed via requirements.txt)
+  • Web browser (Chrome, Firefox, Edge, Safari)
+  • Windows, macOS, or Linux
+
+
+HOW TO INSTALL
+--------------
+
+1. Open a terminal/command prompt
+
+2. Navigate to the project folder:
+   cd "p:\Final Year p2\dlp_web_only"
+
+3. Install required packages:
+   pip install -r requirements.txt
+
+   This installs:
+   - Flask (web framework)
+   - python-dotenv (configuration management)
+
+
+HOW TO USE
+----------
+
+STEP 1: START THE SERVER
+-------------------------
+Run this command:
+
+    python dlp_web.py
+
+You'll see output like this:
+
+    ============================================================
+    NEW API KEY GENERATED: abc123xyz789...
+    Store this key securely. It's saved in: dlp_api_key.txt
+    ============================================================
+
+IMPORTANT: Save this API key! You'll need it to access the system.
+
+
+STEP 2: OPEN YOUR WEB BROWSER
+------------------------------
+Go to: http://127.0.0.1:5000
+
+The first time you visit, a popup will ask for your API key.
+Enter the key from Step 1 (or open dlp_api_key.txt to find it).
+
+
+STEP 3: CONFIGURE MONITORING
+-----------------------------
+Click on the "Configuration" tab at the top.
+
+Add folders to monitor:
+  1. Type a folder path (e.g., C:\Documents or ./my_files)
+  2. Click "Add Path"
+  3. Click "Save Configuration"
+
+Optional - Add authorized destinations:
+  These are locations where file transfers are always allowed
+  (e.g., backup@company.com or \\server\backup)
+
+Optional - Configure email alerts:
+  1. Enter your email address
+  2. Add SMTP settings (Gmail, Outlook, etc.)
+  3. See SECURITY.md for detailed SMTP setup
+
+
+STEP 4: START MONITORING
+-------------------------
+Click on the "Monitoring" tab.
+
+Click "Start Monitoring" button.
+
+The system will now:
+  • Scan files every 5 seconds
+  • Detect sensitive data patterns
+  • Create alerts when issues are found
+  • Show status in real-time
+
+
+USING THE FEATURES
+------------------
+
+MONITORING TAB:
+  • Start/Stop Monitoring - Begin or pause automatic scanning
+  • Manual Scan - Run a one-time scan right now
+  • Test Transfer - Check if a file transfer would be blocked
+    Example: Enter "C:\secret.txt" and "unauthorized@external.com"
+
+CONFIGURATION TAB:
+  • Add/remove folders to monitor
+  • Add/remove authorized transfer destinations
+  • Set email address for alerts
+  • Configure SMTP server for email sending
+  • View all detection patterns being used
+
+ALERTS TAB:
+  • See all security alerts generated
+  • Shows: timestamp, severity, and details
+  • Clear alerts when you've addressed them
+
+LOGS TAB:
+  • View system logs in real-time
+  • See what the scanner is doing
+  • Debug any issues
+  • Shows last 250 lines (adjustable)
+
+
+UNDERSTANDING ALERTS
+--------------------
+
+HIGH SEVERITY:
+  Sensitive data was found in a monitored file
+  Example: "Credit card detected in C:\docs\payment.txt"
+
+CRITICAL SEVERITY:
+  Unauthorized transfer attempt with sensitive data
+  Example: "Blocked transfer of secret.txt to unknown@external.com"
+
+What to do when you see an alert:
+  1. Check the file mentioned in the alert
+  2. Verify if the data is truly sensitive
+  3. Remove/encrypt sensitive data if needed
+  4. Add to authorized destinations if legitimate
+  5. Clear the alert once resolved
+
+
+TESTING THE SYSTEM
+------------------
+
+To verify it works, try this:
+
+1. Create a test file in the monitored folder:
+   echo "Credit card: 4532-1234-5678-9010" > monitored_data\test.txt
+
+2. Wait a few seconds or click "Manual Scan"
+
+3. Go to Alerts tab - you should see a HIGH severity alert
+
+4. Check Logs tab - you'll see the scan activity
+
+
+SECURITY NOTES
+--------------
+
+API KEY:
+  • Your API key is in dlp_api_key.txt
+  • Keep it secret and secure
+  • Don't share it or commit it to Git
+  • To reset: delete the file and restart the server
+
+NETWORK ACCESS:
+  • By default, only accessible from your computer (127.0.0.1)
+  • For network access, see SECURITY.md for proper setup
+  • Always use HTTPS in production environments
+
+EMAIL ALERTS:
+  • Don't use your regular email password
+  • Use "App Passwords" for Gmail
+  • See SECURITY.md for provider-specific setup
+
+
+COMMON ISSUES & SOLUTIONS
+--------------------------
+
+"Module not found" error:
+  → Run: pip install -r requirements.txt
+
+"Address already in use" error:
+  → Port 5000 is busy. Stop other Flask apps or use different port
+
+Can't access the web interface:
+  → Make sure server is running (look for "Running on http://127.0.0.1:5000")
+  → Check firewall isn't blocking port 5000
+  → Try http://localhost:5000 instead
+
+"Invalid API key" message:
+  → Check dlp_api_key.txt for the correct key
+  → Clear browser localStorage and re-enter key
+  → Restart the server to generate a new key
+
+No alerts appearing:
+  → Check that monitoring is started (green "MONITORING" pill)
+  → Verify your folders exist and have files
+  → Check Logs tab for any error messages
+  → Run manual scan to test immediately
+
+Email alerts not sending:
+  → Verify SMTP settings are correct
+  → Check logs for SMTP errors
+  → Ensure you're using app passwords (not regular passwords)
+  → Test with a simple SMTP client first
+
+
+FILE STRUCTURE
+--------------
+
+dlp_web.py              Main Flask application (run this)
+dlp_monitor.py          Core scanning and detection engine
+dlp_config.json         Your configuration (paths, email, SMTP)
+dlp_api_key.txt         Your secret API key (DO NOT SHARE)
+dlp_monitor.log         System logs
+requirements.txt        Required Python packages
+templates/              HTML files for web interface
+static/                 CSS and JavaScript files
+monitored_data/         Default folder to monitor (created automatically)
+
+
+ADVANCED USAGE
+--------------
+
+COMMAND LINE API ACCESS:
+You can control the system via API without the web interface.
+
+Get status:
+    curl http://127.0.0.1:5000/api/status
+
+Start monitoring:
+    curl -H "X-API-Key: YOUR_KEY" -X POST http://127.0.0.1:5000/api/start
+
+Stop monitoring:
+    curl -H "X-API-Key: YOUR_KEY" -X POST http://127.0.0.1:5000/api/stop
+
+Get alerts:
+    curl -H "X-API-Key: YOUR_KEY" http://127.0.0.1:5000/api/alerts
+
+See README.md for complete API documentation.
+
+
+PRODUCTION DEPLOYMENT
+---------------------
+
+For production use (not just testing):
+
+1. Use a production WSGI server (not Flask's dev server):
+   pip install gunicorn
+   gunicorn -w 4 -b 0.0.0.0:5000 "dlp_web:create_app()"
+
+2. Set up HTTPS with a reverse proxy (nginx, Apache)
+
+3. Use environment variables for sensitive config
+
+4. Set proper file permissions (chmod 600 on sensitive files)
+
+5. Review SECURITY.md for complete deployment checklist
+
+
+GETTING HELP
+------------
+
+Documentation Files:
+  • README.md - Complete feature documentation
+  • SECURITY.md - Security best practices and setup
+  • CHANGES.md - What's new in version 2.0
+  • This file - Basic usage instructions
+
+Testing:
+  • Run: python test_improvements.py
+  • Run: python quickstart.py
+
+Check Logs:
+  • Open dlp_monitor.log in a text editor
+  • Or view in Logs tab of web interface
+
+
+QUICK REFERENCE
+---------------
+
+Start server:        python dlp_web.py
+Web interface:       http://127.0.0.1:5000
+API key location:    dlp_api_key.txt
+Configuration:       dlp_config.json
+Logs:                dlp_monitor.log
+Run tests:           python test_improvements.py
+
+
+VERSION INFORMATION
+-------------------
+
+Current Version: 2.0
+Release Date: December 22, 2025
+
+Major Features:
+  ✓ API key authentication
+  ✓ Email notifications (SMTP)
+  ✓ Real-time monitoring
+  ✓ Web-based management
+  ✓ Multiple detection patterns
+  ✓ Transfer simulation
+  ✓ Thread-safe operation
+  ✓ Input validation
+  ✓ Comprehensive error handling
+
+
+LICENSE
+-------
+
+MIT License - See project repository for full license text.
+
+
+================================================================================
+                        HAPPY MONITORING!
+      For detailed technical documentation, see README.md and SECURITY.md
+================================================================================

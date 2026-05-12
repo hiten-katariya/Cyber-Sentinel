@@ -1,0 +1,110 @@
+CYBER SENTINEL — API CHEAT SHEET (PAGE → ENDPOINTS)
+
+Legend
+- Auth: Requires X-API-Key header
+- Poll: Called repeatedly by the UI on a timer
+
+MONITORING PAGE (GET /monitoring)
+- GET /api/status (Auth: no in code; called by JS with key anyway) | Poll (2s)
+  Purpose: top status pill + last scan time/error
+- POST /api/start (Auth: yes)
+  Purpose: start background monitoring thread
+- POST /api/stop (Auth: yes)
+  Purpose: stop background monitoring thread
+- POST /api/scan (Auth: yes)
+  Purpose: trigger a manual scan run
+  Payload: none (currently ignores extra JSON)
+- POST /api/test-transfer (Auth: yes)
+  Purpose: simulate a file transfer and block/allow based on rules
+  Payload: { "file_path": "...", "destination": "..." }
+
+ALERTS PAGE (GET /alerts)
+- GET /api/alerts (Auth: yes) | Poll (5s)
+  Purpose: fetch latest alerts
+  Response: { "alerts": [ ... ] }
+- POST /api/alerts/clear (Auth: yes)
+  Purpose: clear all alerts
+- GET /api/status (Auth: no in code) | Poll (2s)
+  Purpose: status pill
+
+DASHBOARD PAGE (GET /dashboard)
+- GET /api/report (Auth: yes) | Poll (5s)
+  Purpose: overall security report summary
+- GET /api/statistics (Auth: yes) | Poll (5s)
+  Purpose: alert statistics + scan statistics
+  Response: { "ok": true, "statistics": {...}, "scan_stats": {...} }
+- GET /api/quarantine/status (Auth: yes) | Poll (5s)
+  Purpose: show quarantine enabled/disabled
+- POST /api/quarantine/enable (Auth: yes)
+  Purpose: enable quarantine
+- POST /api/quarantine/disable (Auth: yes)
+  Purpose: disable quarantine
+- GET /api/export/csv (Auth: yes)
+  Purpose: export alerts to CSV
+  Response: { "ok": true, "file": "..." }
+- GET /api/export/json (Auth: yes)
+  Purpose: export alerts to JSON
+  Response: { "ok": true, "file": "..." }
+- GET /api/status (Auth: no in code) | Poll (2s)
+  Purpose: status pill
+
+ADVANCED PAGE (GET /advanced)
+Whitelist
+- GET /api/whitelist (Auth: yes)
+  Purpose: list whitelist entries
+- POST /api/whitelist/add (Auth: yes)
+  Purpose: add whitelist entry
+  Payload: { "item": "..." }
+- POST /api/whitelist/remove (Auth: yes)
+  Purpose: remove whitelist entry
+  Payload: { "item": "..." }
+
+Quarantine
+- GET /api/quarantine/status (Auth: yes)
+- POST /api/quarantine/enable (Auth: yes)
+- POST /api/quarantine/disable (Auth: yes)
+
+Backup/Restore
+- POST /api/backup/create (Auth: yes)
+  Purpose: create a config backup
+  Response: { "ok": true, "backup_file": "..." }
+- POST /api/backup/restore (Auth: yes)
+  Purpose: restore from backup
+  Payload: { "backup_file": "..." }
+
+Maintenance
+- POST /api/alerts/clear (Auth: yes)
+  Purpose: clear all alerts
+- GET /api/status (Auth: no in code) | Poll (2s)
+  Purpose: status pill
+
+LOGS PAGE (GET /logs)
+- GET /api/logs?lines=<N> (Auth: yes)
+  Purpose: tail last N lines from cyber_sentinel.log
+  Response: { "text": "..." }
+- GET /api/status (Auth: no in code) | Poll (2s)
+  Purpose: status pill
+
+CONFIGURATION PAGE (GET /configuration)
+- GET /api/config (Auth: yes)
+  Purpose: load current config JSON
+- POST /api/config (Auth: yes)
+  Purpose: save config JSON
+  Payload: { monitored_paths: [...], authorized_destinations: [...], alert_email: "...", smtp_config: {...} }
+- GET /api/status (Auth: no in code) | Poll (2s)
+  Purpose: status pill
+
+HTML-only routes (no API key required)
+- GET /           -> redirects to /monitoring
+- GET /monitoring
+- GET /alerts
+- GET /dashboard
+- GET /advanced
+- GET /logs
+- GET /configuration
+
+Form-based fallback routes (work without JS)
+- POST /action/start
+- POST /action/stop
+- POST /action/scan
+- POST /action/test-transfer
