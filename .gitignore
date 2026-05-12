@@ -1,6 +1,8 @@
 # Compiled class file
 *.class
-
+# Secret files
+dlp_web_only/monitored_data/api_keys_config.txt
+.env
 # Log file
 *.log
 
