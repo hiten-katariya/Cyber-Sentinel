@@ -1,14 +1,93 @@
-# API Key - DO NOT COMMIT
+# ============================================================================
+# SECURITY: Environment Variables & Secrets
+# ============================================================================
+# NEVER commit these files to version control
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+.env.development
+
+# ============================================================================
+# Security Credentials & Keys
+# ============================================================================
+# API Keys & Authentication
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
 dlp_api_key.txt
+api_key*.txt
+secret_key*.txt
+private_key*
+public_key*
+*.asc
 
-# Configuration with potentially sensitive data
+# ============================================================================
+# Sensitive Configuration Files
+# ============================================================================
+# Config files that may contain secrets
+config.secret.*
+config.private.*
 dlp_config.json
+**/secrets/**
+**/credentials/**
+credentials.json
+service-account*.json
+google-credentials.json
+aws-credentials.json
+azure-credentials.json
 
-# Logs
+# ============================================================================
+# Database & Connection Strings
+# ============================================================================
+*.db
+*.sqlite
+*.sqlite3
+database_url.txt
+connection_string.txt
+db_password.txt
+sql_password.txt
+
+# ============================================================================
+# SSL/TLS Certificates
+# ============================================================================
+*.crt
+*.cert
+*.cer
+ssl_cert*
+ssl_key*
+certificate*
+
+# ============================================================================
+# Logs & Temporary Files
+# ============================================================================
 dlp_monitor.log
 *.log
+logs/
+*.tmp
+*.temp
+**/tmp/**
+**/temp/**
+*.swp
+*.swo
+*~
 
-# Python
+# ============================================================================
+# IDE & Development Environment
+# ============================================================================
+.vscode/
+.idea/
+*.sublime-*
+*.swp
+.DS_Store
+*.vscode-fold
+
+# ============================================================================
+# Python & Virtual Environments
+# ============================================================================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -32,14 +111,42 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+pip-log.txt
+pip-delete-this-directory.txt
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# ============================================================================
+# Node.js & npm (if applicable)
+# ============================================================================
+node_modules/
+npm-debug.log*
+yarn-error.log*
 
-# OS
-.DS_Store
+# ============================================================================
+# OS Specific Files
+# ============================================================================
 Thumbs.db
+.DS_Store
+*.orig
+
+# ============================================================================
+# Backup Files
+# ============================================================================
+*.bak
+*.backup
+*_backup*
+backup_*
+
+# ============================================================================
+# Local Override Files
+# ============================================================================
+local.env
+override.env
+settings.local.json
+
+# ============================================================================
+# GitHub Secret Scanning
+# ============================================================================
+# These files may trigger GitHub's push protection
+*.secret
+*_secret*
+secret_*

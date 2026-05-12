@@ -13,24 +13,36 @@ from typing import Any, Dict, Optional, cast
 from flask import Flask, jsonify, redirect, render_template, request, url_for
 
 from dlp_monitor import DLPSystem, SensitiveDataPatterns
+from secure_config import config, ConfigurationError, init_secure_config
 
 # Rate limiting storage
 rate_limit_storage = defaultdict(lambda: {'count': 0, 'reset_time': time.time()})
 
-# Generate or load API key
-API_KEY_FILE = Path("dlp_api_key.txt")
-if API_KEY_FILE.exists():
-    API_KEY = API_KEY_FILE.read_text(encoding="utf-8").strip()
-else:
-    API_KEY = secrets.token_urlsafe(32)
-    API_KEY_FILE.write_text(API_KEY, encoding="utf-8")
+# Load API key from secure configuration (.env file)
+# See secure_config.py and .env.example for setup instructions
+try:
+    API_KEY = config.get_secret('DLP_API_KEY', required=True)
     print(f"\n{'='*60}")
-    print(f"🛡️  CYBER SENTINEL - API KEY GENERATED")
+    print(f"🛡️  CYBER SENTINEL - API KEY LOADED")
     print(f"{'='*60}")
-    print(f"API Key: {API_KEY}")
-    print(f"Stored in: {API_KEY_FILE.absolute()}")
-    print(f"Keep this key secure!")
+    print(f"✓ API Key loaded from environment configuration")
+    print(f"✓ Configuration: {config}")
+    print(f"✓ Environment: {os.getenv('FLASK_ENV', 'development')}")
     print(f"{'='*60}\n")
+except ConfigurationError as e:
+    print(f"\n{'='*60}")
+    print(f"✗ CONFIGURATION ERROR")
+    print(f"{'='*60}")
+    print(f"Failed to load API key from environment.")
+    print(f"Error: {e}")
+    print(f"\nSetup Instructions:")
+    print(f"  1. Copy .env.example to .env")
+    print(f"  2. Generate a secure API key: python -c \"import secrets; print(secrets.token_urlsafe(32))\"")
+    print(f"  3. Set DLP_API_KEY=<generated-key> in .env")
+    print(f"  4. Start the application again")
+    print(f"\nFor more details, see: SECURITY_SETUP.md")
+    print(f"{'='*60}\n")
+    exit(1)
 
 
 def require_auth(f):
@@ -236,6 +248,14 @@ class DLPWebState:
 
 def create_app() -> Flask:
     app = Flask(__name__)
+    
+    # Initialize Flask app with secure configuration from .env
+    try:
+        init_secure_config(app)
+    except ConfigurationError as e:
+        print(f"Error initializing Flask configuration: {e}")
+        raise
+    
     state = DLPWebState(config_path=Path("dlp_config.json"))
 
     @app.get("/")
